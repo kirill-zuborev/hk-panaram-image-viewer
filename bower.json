@@ -1,7 +1,7 @@
 {
-  "name": "hk-panaram-image-viewer",
+  "name": "hk-panoram-image-viewer",
   "description": "Image viewer for 360 degree photos",
-  "main": "hk-panaram-image-viewer.html",
+  "main": "hk-panoram-image-viewer.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0"
   },

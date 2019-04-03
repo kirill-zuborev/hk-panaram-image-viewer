@@ -1,4 +1,4 @@
-# \<hk-panaram-image-viewer\>
+# \<hk-panoram-image-viewer\>
 
 Image viewer for 360 degree photos
 

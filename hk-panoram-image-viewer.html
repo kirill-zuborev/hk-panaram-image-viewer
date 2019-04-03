@@ -2,7 +2,7 @@
 
 <script src="./lib/360-image-viewer.min.js"></script>
 
-<dom-module id="hk-panaram-image-viewer">
+<dom-module id="hk-panoram-image-viewer">
 	<template>
 		<style>
 			:host {
@@ -16,15 +16,15 @@
 
 	<script>
 		/**
-		 * `hk-panaram-image-viewer`
+		 * `hk-panoram-image-viewer`
 		 * Image viewer for 360 degree photos
 		 *
 		 * @customElement
 		 * @polymer
 		 * @demo demo/index.html
 		 */
-		class HkPanaramImageViewer extends Polymer.Element {
-			static get is() { return 'hk-panaram-image-viewer'; }
+		class HkPanoramImageViewer extends Polymer.Element {
+			static get is() { return 'hk-panoram-image-viewer'; }
 			static get properties() {
 				return {
 					imageUrl: {
@@ -111,6 +111,6 @@
 			}
 		}
 
-		window.customElements.define(HkPanaramImageViewer.is, HkPanaramImageViewer);
+		window.customElements.define(HkPanoramImageViewer.is, HkPanoramImageViewer);
 	</script>
 </dom-module>
