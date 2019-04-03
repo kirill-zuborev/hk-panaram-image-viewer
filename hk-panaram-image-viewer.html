@@ -1,0 +1,116 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<script src="./lib/360-image-viewer.min.js"></script>
+
+<dom-module id="hk-panaram-image-viewer">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+
+		<canvas id="canvas"></canvas>
+
+	</template>
+
+	<script>
+		/**
+		 * `hk-panaram-image-viewer`
+		 * Image viewer for 360 degree photos
+		 *
+		 * @customElement
+		 * @polymer
+		 * @demo demo/index.html
+		 */
+		class HkPanaramImageViewer extends Polymer.Element {
+			static get is() { return 'hk-panaram-image-viewer'; }
+			static get properties() {
+				return {
+					imageUrl: {
+						type: String,
+						observer: '_imageUrlChanged'
+					},
+					autoSpin: {
+						type: Boolean,
+						value: false,
+						reflectToAttribute: true
+					}
+				};
+			}
+
+			static get observers() {
+				return [
+					'_imageUrlChanged(imageUrl, _viewer)'
+				];
+			}
+
+			connectedCallback() {
+				super.connectedCallback();
+
+				this._initialize();
+			}
+
+			_initialize() {
+				const canvas = this._createCanvas({
+					canvas: this.shadowRoot.querySelector('#canvas'),
+				});
+
+				this._viewer = viewerFactory({
+					canvas: canvas
+				});
+
+				this._viewer.start();
+
+				this._viewer.on('tick', (dt) => {
+					if (this.autoSpin && !this._viewer.controls.dragging) {
+						this._viewer.controls.theta -= dt * 0.00005;
+					}
+				});
+			}
+
+			_createCanvas(opt = {}) {
+				const canvas = opt.canvas;
+
+				// Resize the canvas with the proper device pixel ratio
+				const resizeCanvas = () => {
+					const width = canvas.offsetParent.offsetWidth;
+					const height = canvas.offsetParent.offsetHeight;
+					const dpr = window.devicePixelRatio;
+					canvas.width = width * dpr;
+					canvas.height = height * dpr;
+					canvas.style.width = '100%';
+				};
+
+				// Ensure the grab cursor appears even when the mouse is outside the window
+				const setupGrabCursor = () => {
+					canvas.addEventListener('mousedown', () => {
+						document.documentElement.classList.remove('grabbing');
+						document.documentElement.classList.add('grabbing');
+					});
+					window.addEventListener('mouseup', () => {
+						document.documentElement.classList.remove('grabbing');
+					});
+				};
+
+				window.addEventListener('resize', resizeCanvas);
+				resizeCanvas();
+				setupGrabCursor();
+				return canvas;
+			}
+
+			_imageUrlChanged(imageUrl, _viewer) {
+				if (imageUrl && _viewer) {
+					var img = new Image();
+					img.src = imageUrl;
+
+					img.onload = () => {
+						this._viewer.texture(img)
+					};
+				}
+			}
+		}
+
+		window.customElements.define(HkPanaramImageViewer.is, HkPanaramImageViewer);
+	</script>
+</dom-module>
