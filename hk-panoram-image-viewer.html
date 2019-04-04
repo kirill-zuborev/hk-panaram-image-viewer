@@ -27,10 +27,8 @@
 			static get is() { return 'hk-panoram-image-viewer'; }
 			static get properties() {
 				return {
-					imageUrl: {
-						type: String,
-						observer: '_imageUrlChanged'
-					},
+					imageUrl: String,
+					image: Image,
 					autoSpin: {
 						type: Boolean,
 						value: false,
@@ -41,7 +39,7 @@
 
 			static get observers() {
 				return [
-					'_imageUrlChanged(imageUrl, _viewer)'
+					'_imageUrlChanged(imageUrl, image, _viewer)'
 				];
 			}
 
@@ -99,14 +97,19 @@
 				return canvas;
 			}
 
-			_imageUrlChanged(imageUrl, _viewer) {
+			_imageUrlChanged(imageUrl, image, _viewer) {
 				if (imageUrl && _viewer) {
 					var img = new Image();
+					img.crossOrigin = "Anonymous";
 					img.src = imageUrl;
 
 					img.onload = () => {
 						this._viewer.texture(img)
 					};
+				}
+
+				if (image && _viewer) {
+					this._viewer.texture(image)
 				}
 			}
 		}
