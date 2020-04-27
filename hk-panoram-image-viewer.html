@@ -3,7 +3,7 @@
 <script type="text/javascript" src="lib/pannellum.js"></script>
 
 <dom-module id="hk-panoram-image-viewer">
-	<link rel="import" type="css" href="lib/pannellum.css"/>
+	<link rel="import" type="css" href="lib/pannellum.css" />
 
 	<template>
 		<style>
@@ -34,6 +34,10 @@
 			static get properties() {
 				return {
 					imageUrl: String,
+					_currentScene: {
+						type: Object,
+						value: null
+					}
 				};
 			}
 
@@ -44,9 +48,29 @@
 			}
 
 			_imageUrlChanged(imageUrl) {
-				if (imageUrl) {
+				if (this._currentScene) {
+					const gr = this._currentScene.getRenderer();
 
-					pannellum.viewer(this.shadowRoot.querySelector("#panorama"), {
+					if (gr) {
+						const gc = gr.getCanvas();
+						const gl = gc.getContext("webgl");
+	
+						if (gl) {
+							gl.getExtension('WEBGL_lose_context').loseContext();
+						}
+					}
+
+					this._currentScene.destroy();
+					this._currentScene = null;
+
+					const panorama = this.shadowRoot.querySelector("#panorama");
+					while (panorama.firstChild) {
+						panorama.removeChild(panorama.lastChild);
+					}
+				}
+
+				if (imageUrl) {
+					this._currentScene = pannellum.viewer(this.shadowRoot.querySelector("#panorama"), {
 						"type": "equirectangular",
 						"panorama": imageUrl,
 						"autoLoad": true,
